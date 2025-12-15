@@ -1,11 +1,12 @@
 {
   "required": true,
-  "package": "com.example.mixin",
+  "package": "dev.kurowater.kuradialmenu.mixin.client",
   "compatibilityLevel": "${java}",
   "mixins": [
-    "ExampleMixin"
+      "KuRadialMenuMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   }
 }
+

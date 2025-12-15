@@ -1,25 +1,24 @@
-# Stonecutter Fabric template
-## Setup
-1. Review the supported Minecraft versions in `settings.gradle.kts`.
-   For new entries, add `versions/.../gradle.properties` with the same keys as other versions.
-2. Change `mod.group`, `mod.id` and `mod.name` properties in `gradle.properties`.
-3. Rename `com.example` package in `src/main/java`.
-4. Rename `src/main/resources/template.mixins.json` to use your mod's id.
-5. Review the `LICENSE` file. 
-   See the [license decision diagram](https://docs.codeberg.org/getting-started/licensing/#license-decision-diagram) for common options.
-6. Review `src/main/resources/fabric.mod.json` to have up-to-date properties.
+# Stonecutter Fabric テンプレート
+## セットアップ
+1. `settings.gradle.kts` でサポートされている Minecraft バージョンを確認します。
+   新しいエントリについては、他のバージョンと同じキーを持つ `versions/.../gradle.properties` を追加します。
+2. `gradle.properties` の `mod.group`、`mod.id`、`mod.name` プロパティを変更します。
+3. `src/main/java` の `com.example` パッケージの名前を変更します。
+4. `src/main/resources/template.mixins.json` を mod の ID を使用するように名前変更します。
+5. `LICENSE` ファイルを確認します。
+   一般的なオプションについては、[ライセンス決定図](https://docs.codeberg.org/getting-started/licensing/#license-decision-diagram)を参照してください。
+6. `src/main/resources/fabric.mod.json` を最新のプロパティを持つように確認します。
 
-## Usage
-- Use `"Set active project to ..."` Gradle tasks to update the Minecraft version
-  available in `src/` classes.
-- Use `buildAndCollect` Gradle task to store mod releases in `build/libs/`.
-- Enable `mod-publish-plugin` in `stonecutter.gradle.kts` and `build.gradle.kts`
-  and the corresponding code blocks to publish releases to Modrinth and Curseforge.
-- Enable `maven-publish` in `build.gradle.kts` and the corresponding code block
-  to publish releases to a personal maven repository.
+## 使用方法
+- `"Set active project to ..."` Gradle タスクを使用して、`src/` クラスで利用可能な Minecraft バージョンを更新します。
+- `buildAndCollect` Gradle タスクを使用して、mod リリースを `build/libs/` に保存します。
+- `stonecutter.gradle.kts` と `build.gradle.kts` で `mod-publish-plugin` を有効にし、
+  対応するコードブロックを使用して、Modrinth と Curseforge にリリースを公開します。
+- `build.gradle.kts` で `maven-publish` を有効にし、対応するコードブロックを使用して、
+  個人用 Maven リポジトリにリリースを公開します。
 
-## Useful links
-- [Stonecutter beginner's guide](https://stonecutter.kikugie.dev/wiki/start/): *spoiler: you* ***need*** *to understand how it works!*
-- [Fabric Discord server](https://discord.gg/v6v4pMv): for mod development help.
-- [Stonecutter Discord server](https://discord.kikugie.dev/): for Stonecutter and Gradle help.
-- [How To Ask Questions - the guide](http://www.catb.org/esr/faqs/smart-questions.html): also in [video form](https://www.youtube.com/results?search_query=How+To+Ask+Questions+The+Smart+Way).
+## 便利なリンク
+- [Stonecutter 初心者ガイド](https://stonecutter.kikugie.dev/wiki/start/): *ネタバレ: 必要があります* ***理解する*** *それがどのように機能するかを！*
+- [Fabric Discord サーバー](https://discord.gg/v6v4pMv): mod 開発ヘルプ用。
+- [Stonecutter Discord サーバー](https://discord.kikugie.dev/): Stonecutter および Gradle ヘルプ用。
+- [質問の仕方 - ガイド](http://www.catb.org/esr/faqs/smart-questions.html): [ビデオ形式](https://www.youtube.com/results?search_query=How+To+Ask+Questions+The+Smart+Way)もあります。
