@@ -2,8 +2,7 @@
   "required": true,
   "package": "dev.kurowater.kuradialmenu.mixin.client",
   "compatibilityLevel": "${java}",
-  "mixins": [
-      "KuRadialMenuMixin"
+  "client": [
   ],
   "injectors": {
     "defaultRequire": 1
