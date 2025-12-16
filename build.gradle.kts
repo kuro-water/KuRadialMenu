@@ -39,6 +39,7 @@ dependencies {
 
     minecraft("com.mojang:minecraft:${stonecutter.current.version}")
     mappings(loom.officialMojangMappings())
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
 
     fapi("fabric-lifecycle-events-v1", "fabric-resource-loader-v0", "fabric-content-registries-v0")
@@ -61,8 +62,11 @@ loom {
 
 java {
     withSourcesJar()
-    targetCompatibility = requiredJava
-    sourceCompatibility = requiredJava
+    // Javaバージョンを自動設定
+    val java = if (stonecutter.eval(stonecutter.current.version, ">=1.20.5"))
+        JavaVersion.VERSION_21 else JavaVersion.VERSION_17
+    targetCompatibility = java
+    sourceCompatibility = java
 }
 
 tasks {

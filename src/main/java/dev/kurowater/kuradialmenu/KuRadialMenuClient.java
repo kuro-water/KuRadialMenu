@@ -11,7 +11,7 @@ public class KuRadialMenuClient implements ClientModInitializer {
     // そうすることで、どの Mod が情報、警告、エラーを書き込んだかが明確になります。
     public static final Logger LOGGER = LoggerFactory.getLogger("kuradialmenu");
     public static final String VERSION = /*$ mod_version*/ "0.1.0";
-    public static final String MINECRAFT = /*$ minecraft*/ "1.21.10";
+    public static final String MINECRAFT = /*$ minecraft*/ "1.20.1";
 
     @Override
     public void onInitializeClient() {
@@ -22,10 +22,10 @@ public class KuRadialMenuClient implements ClientModInitializer {
         LOGGER.info("Hello Fabric world!");
 
         //? if !release
-        LOGGER.warn("I'm still a template!");
+        /*LOGGER.warn("I'm still a template!");*/
 
         //? if fapi: <0.100
-        /*LOGGER.info("Fabric API is old on this version");*/
+        LOGGER.info("Fabric API is old on this version");
     }
 
     /**
@@ -33,9 +33,9 @@ public class KuRadialMenuClient implements ClientModInitializer {
      */
     public static ResourceLocation id(String namespace, String path) {
         //? if <1.21 {
-        /*return new ResourceLocation(namespace, path);
-        *///?} else
-        return ResourceLocation.fromNamespaceAndPath(namespace, path);
+        return new ResourceLocation(namespace, path);
+        //?} else
+        /*return ResourceLocation.fromNamespaceAndPath(namespace, path);*/
     }
 }
 
