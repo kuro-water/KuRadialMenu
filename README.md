@@ -1,6 +1,7 @@
 # KuRadialMenu
 
 ![Minecraft Version](https://img.shields.io/badge/Minecraft-1.19.4%20|%201.20.1%20|%201.21.1-green)
+![Environment](https://img.shields.io/badge/Environment-Client-brightgreen)
 ![Mod Loader](https://img.shields.io/badge/Mod%20Loader-Fabric-blue)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
@@ -73,15 +74,15 @@ java -version  # "21.x.x" が表示されること
 
 ```
 src/main/java/dev/kurowater/kuradialmenu/
-├── client/          # Client専用コード
-│   ├── config/      # 設定管理
-│   ├── keybind/     # キーバインド処理
-│   └── ui/          # UI レンダリング
-├── common/          # 共通ユーティリティ
-│   ├── model/       # データモデル
-│   └── util/        # ヘルパークラス
-└── mixin/           # Mixin によるコア変更
-    └── client/      # Client側 Mixin
+├── KuRadialMenuClient.java  # エントリーポイント
+├── client/                   # Client専用コード
+│   ├── config/               # 設定管理
+│   ├── keybind/              # キーバインド処理
+│   ├── ui/                   # UI レンダリング
+│   ├── model/                # データモデル
+│   └── util/                 # ヘルパークラス
+└── mixin/                    # Mixin によるコア変更
+    └── client/               # Client側 Mixin
 ```
 
 ## 🤝 コントリビューション
@@ -121,5 +122,5 @@ src/main/java/dev/kurowater/kuradialmenu/
 
 **開発者**: kuro-water  
 **バージョン**: 0.1.0  
-**最終更新**: 2025年12月16日
+**最終更新**: 2025年12月18日
 
