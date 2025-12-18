@@ -18,7 +18,8 @@
 
 ### 前提条件
 - [Fabric Loader](https://fabricmc.net/use/) 0.16.0 以上
-- [Fabric API](https://modrinth.com/mod/fabric-api)
+- [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
+- [YetAnotherConfigLib](https://www.curseforge.com/minecraft/mc-mods/yacl)
 
 ### 手順
 1. [Releases](https://github.com/kuro-water/KuRadialMenu/releases) から対応バージョンの `.jar` ファイルをダウンロード
@@ -76,5 +77,5 @@ src/main/java/dev/kurowater/kuradialmenu/
 
 **開発者**: kuro-water  
 **バージョン**: 0.1.0  
-**最終更新**: 2025年12月18日
+**最終更新**: 2025年12月19日
 

@@ -1,26 +1,26 @@
-# Changelog
+# 変更履歴
 
-All notable changes to this project will be documented in this file.
+このプロジェクトのすべての重要な変更はこのファイルに記録されます。
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+フォーマットは [Keep a Changelog](https://keepachangelog.com/ja/1.0.0/) に基づいており、
+このプロジェクトは [Semantic Versioning](https://semver.org/lang/ja/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [未リリース]
 
-### Added
-- Initial project setup with Stonecutter multi-version support
-- Support for Minecraft 1.19.4, 1.20.1, 1.21.1, 1.21.11
-- Basic Fabric Mod structure
-- Client-side radial menu framework preparation
+### 追加
+- Stonecutter マルチバージョンサポートによる初期プロジェクトセットアップ
+- Minecraft 1.19.4, 1.20.1, 1.21.1 のサポート
+- 基本的な Fabric Mod 構造
+- クライアントサイドのラジアルメニューフレームワークの準備
+- 設定管理のための YetAnotherConfigLib (YACL) 依存関係の追加
 
-### Changed
+### 変更
 
-### Fixed
+### 修正
 
 ## [0.1.0] - 2025-12-16
 
-### Added
-- Project initialized
-- Basic mod infrastructure with Fabric API integration
-- Multi-version build system using Stonecutter
-
+### 追加
+- プロジェクトの初期化
+- Fabric API 統合を含む基本的な Mod インフラストラクチャ
+- Stonecutter を使用したマルチバージョンビルドシステム

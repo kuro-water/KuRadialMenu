@@ -26,6 +26,16 @@ repositories {
     }
     strictMaven("https://www.cursemaven.com", "CurseForge", "curse.maven")
     strictMaven("https://api.modrinth.com/maven", "Modrinth", "maven.modrinth")
+
+    // 1.19.4など一部バージョンのみdev.isxanderではなくdev.isxander.yaclらしい
+    strictMaven("https://maven.isxander.dev/releases", "Xander Maven", "dev.isxander", "dev.isxander.yacl")
+
+    // YACLの依存関係
+    strictMaven("https://maven.terraformersmc.com/releases/", "TerraformersMC", "com.terraformersmc")
+    maven("https://maven.quiltmc.org/repository/release") {
+        name = "QuiltMC"
+    }
+
 }
 
 dependencies {
@@ -42,8 +52,21 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
 
+    // 1.19.4など一部バージョンのみリンクが微妙に違う
+    // 細かい検証はしていないので、一旦1.19.4だけ切り分けている
+    // 多く：https://maven.isxander.dev/releases/dev/isxander/yet-another-config-lib/
+    // 一部：https://maven.isxander.dev/releases/dev/isxander/yacl/yet-another-config-lib-fabric/
+    val yaclUrl = if (stonecutter.eval(stonecutter.current.version, "=1.19.4")) {
+        "dev.isxander.yacl:yet-another-config-lib-fabric"
+    } else {
+        "dev.isxander:yet-another-config-lib"
+    }
+    modImplementation("$yaclUrl:${property("yacl_version")}")
+
     fapi("fabric-lifecycle-events-v1", "fabric-resource-loader-v0", "fabric-content-registries-v0")
 }
+
+
 
 loom {
     fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json") // Useful for interface injection
