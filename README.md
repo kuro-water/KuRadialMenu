@@ -22,7 +22,7 @@
 
 ### 手順
 1. [Releases](https://github.com/kuro-water/KuRadialMenu/releases) から対応バージョンの `.jar` ファイルをダウンロード
-2. ダウンロードしたファイルを `.minecraft/mods/` フォルダに配置
+2. ダウンロードしたファイルを `mods/` フォルダに配置
 3. Minecraft を起動してプレイ
 
 ## 🎮 使用方法
@@ -34,41 +34,7 @@
 
 ### 設定
 - Minecraft の設定画面から **Options > Controls > Key Binds** で変更可能
-- 詳細な設定は `.minecraft/config/kuradialmenu.json` で調整
-
-## 🛠️ 開発環境のセットアップ
-
-### 必要な環境
-- **Java**: 21 (1.21.1) または 17 (1.19.4, 1.20.1)
-- **IDE**: IntelliJ IDEA 推奨
-- **ビルドツール**: Gradle 9.2.1+
-
-### セットアップ手順
-
-```powershell
-# 1. リポジトリをクローン
-git clone https://github.com/kuro-water/KuRadialMenu.git
-cd KuRadialMenu
-
-# 2. Java 21 がインストールされていることを確認
-java -version  # "21.x.x" が表示されること
-
-# 3. 依存関係をダウンロードしてビルド
-.\gradlew.bat build
-
-# 4. 開発環境でクライアントを起動
-.\gradlew.bat runClient
-```
-
-### Stonecutter によるバージョン切り替え
-
-```powershell
-# 特定のバージョンをアクティブにする
-.\gradlew.bat "Set active project to 1.21.1"
-
-# 全バージョンをビルドして libs/ に収集
-.\gradlew.bat buildAndCollect
-```
+-  `config/kuradialmenu.json` でも調整可能
 
 ### プロジェクト構造
 
@@ -105,18 +71,6 @@ src/main/java/dev/kurowater/kuradialmenu/
 ## 📄 ライセンス
 
 このプロジェクトは MIT ライセンスの下で公開されています。詳細は [LICENSE](LICENSE) ファイルを参照してください。
-
-## 🔗 リンク
-
-- **GitHub**: [https://github.com/kuro-water/KuRadialMenu](https://github.com/kuro-water/KuRadialMenu)
-- **Issues**: [https://github.com/kuro-water/KuRadialMenu/issues](https://github.com/kuro-water/KuRadialMenu/issues)
-- **Fabric Discord**: [https://discord.gg/v6v4pMv](https://discord.gg/v6v4pMv)
-
-## 📚 参考資料
-
-- [Fabric Wiki](https://fabricmc.net/wiki/)
-- [Stonecutter Documentation](https://stonecutter.kikugie.dev/wiki/)
-- [Minecraft Development Plugin](https://plugins.jetbrains.com/plugin/8327-minecraft-development)
 
 ---
 
