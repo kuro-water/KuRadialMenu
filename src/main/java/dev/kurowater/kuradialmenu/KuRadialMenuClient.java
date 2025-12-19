@@ -1,7 +1,7 @@
 package dev.kurowater.kuradialmenu;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,13 +29,13 @@ public class KuRadialMenuClient implements ClientModInitializer {
     }
 
     /**
-     * 1.21 で導入された {@link ResourceLocation} の変更に適応します。
+     * 1.21 で導入された {@link Identifier} の変更に適応します。
      */
-    public static ResourceLocation id(String namespace, String path) {
+    public static Identifier id(String namespace, String path) {
         //? if <1.21 {
-        return new ResourceLocation(namespace, path);
+        return new Identifier(namespace, path);
         //?} else
-        /*return ResourceLocation.fromNamespaceAndPath(namespace, path);*/
+        /*return Identifier.of(namespace, path);*/
     }
 }
 
