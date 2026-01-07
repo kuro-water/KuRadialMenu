@@ -1,6 +1,7 @@
 {
   "key.category.kuradialmenu": "KuRadialMenu",
   "key.kuradialmenu.open_menu": "ラジアルメニューを開く",
+  "key.kuradialmenu.open_config": "設定画面を開く",
 
   "screen.kuradialmenu.radial_menu": "ラジアルメニュー",
 
@@ -10,10 +11,13 @@
   "config.kuradialmenu.category.general.tooltip": "メニューの一般設定",
   "config.kuradialmenu.category.ui": "UI",
   "config.kuradialmenu.category.ui.tooltip": "ユーザーインターフェース設定",
+  "config.kuradialmenu.category.slots": "スロットアクション",
+  "config.kuradialmenu.category.slots.tooltip": "各スロットに割り当てるアクションを設定",
 
   "config.kuradialmenu.group.menu": "メニュー",
   "config.kuradialmenu.group.size": "サイズ",
   "config.kuradialmenu.group.colors": "カラー",
+  "config.kuradialmenu.group.slotActions": "スロット割り当て",
 
   "config.kuradialmenu.option.slotCount": "スロット数",
   "config.kuradialmenu.option.slotCount.description": "ラジアルメニューのスロット数（4、8、または12）",
@@ -30,6 +34,10 @@
   "config.kuradialmenu.option.highlightColor": "ハイライト色",
   "config.kuradialmenu.option.highlightColor.description": "選択中スロットのハイライト色",
   "config.kuradialmenu.option.borderColor": "境界線色",
-  "config.kuradialmenu.option.borderColor.description": "スロットの境界線の色"
+  "config.kuradialmenu.option.borderColor.description": "スロットの境界線の色",
+
+  "config.kuradialmenu.slot.index": "スロット %d (%s)",
+  "config.kuradialmenu.slot.description": "このスロットに割り当てるキーバインドを選択",
+  "config.kuradialmenu.slot.none": "（未設定）"
 }
 

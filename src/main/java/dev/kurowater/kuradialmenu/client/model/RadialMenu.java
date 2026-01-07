@@ -1,11 +1,11 @@
 package dev.kurowater.kuradialmenu.client.model;
 
+import dev.kurowater.kuradialmenu.KuRadialMenuClient;
 import dev.kurowater.kuradialmenu.client.config.ConfigHandler;
 import dev.kurowater.kuradialmenu.client.config.ModConfig;
 import dev.kurowater.kuradialmenu.client.util.MathUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,30 +105,11 @@ public class RadialMenu {
         getSelectedSlot().ifPresent(slot -> {
             KeyBinding keyBinding = slot.getKeyBinding();
             if (keyBinding != null) {
-                // キーバインドを一時的に押下状態にする
-                simulateKeyPress(keyBinding);
+                KuRadialMenuClient.LOGGER.debug("Executing action: {}", slot.getActionId());
+                MenuAction action = new MenuAction.KeyBindingAction(keyBinding);
+                action.execute(MinecraftClient.getInstance());
             }
         });
-    }
-
-    /**
-     * キーバインドの押下をシミュレート
-     */
-    private void simulateKeyPress(@Nullable KeyBinding keyBinding) {
-        if (keyBinding == null) {
-            return;
-        }
-
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null) {
-            return;
-        }
-
-        // キーバインドの押下状態を一時的に true にして、次の tick で実行される
-        keyBinding.setPressed(true);
-
-        // 一部のキーバインドは押下フラグだけでなく、時間経過も必要なため
-        // 即座に false に戻さず、次のフレームで自然に解除されるようにする
     }
 }
 

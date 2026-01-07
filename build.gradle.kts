@@ -63,8 +63,9 @@ dependencies {
     }
     modImplementation("$yaclUrl:${property("yacl_version")}")
 
-    // Mod Menu (optional)
+    // Mod Menu (optional - コンパイル時参照 + 開発環境での実行時に含める)
     modCompileOnly("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+    modLocalRuntime("com.terraformersmc:modmenu:${property("deps.modmenu")}")
 
     fapi("fabric-lifecycle-events-v1", "fabric-resource-loader-v0", "fabric-key-binding-api-v1")
 }

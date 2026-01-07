@@ -34,8 +34,9 @@
 3. **実行**: クリックまたはキーを離す
 
 ### 設定
-- Minecraft の設定画面から **Options > Controls > Key Binds** で変更可能
--  `config/kuradialmenu.json` でも調整可能
+- **K キー** を押すと設定画面を直接開けます（Mod Menu 不要）
+- [Mod Menu](https://modrinth.com/mod/modmenu) からも設定画面にアクセス可能
+- `config/kuradialmenu.json` でも調整可能
 
 ### プロジェクト構造
 

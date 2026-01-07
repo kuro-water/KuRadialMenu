@@ -23,6 +23,16 @@ public final class ModKeybinds {
             CATEGORY
     );
 
+    /**
+     * 設定画面を開くキー (デフォルト: K)
+     */
+    public static final KeyBinding OPEN_CONFIG = new KeyBinding(
+            "key.kuradialmenu.open_config",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_K,
+            CATEGORY
+    );
+
     private ModKeybinds() {
         // ユーティリティクラスのためインスタンス化禁止
     }
@@ -32,6 +42,7 @@ public final class ModKeybinds {
      */
     public static void register() {
         KeyBindingHelper.registerKeyBinding(OPEN_MENU);
+        KeyBindingHelper.registerKeyBinding(OPEN_CONFIG);
         KuRadialMenuClient.LOGGER.info("Keybinds registered");
     }
 }

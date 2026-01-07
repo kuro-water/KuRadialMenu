@@ -1,5 +1,6 @@
 {
   "key.kuradialmenu.open_menu": "Open Radial Menu",
+  "key.kuradialmenu.open_config": "Open Settings",
   "key.category.kuradialmenu": "KuRadialMenu",
 
   "screen.kuradialmenu.radial_menu": "Radial Menu",
@@ -10,10 +11,13 @@
   "config.kuradialmenu.category.general.tooltip": "General menu settings",
   "config.kuradialmenu.category.ui": "UI",
   "config.kuradialmenu.category.ui.tooltip": "User interface settings",
+  "config.kuradialmenu.category.slots": "Slot Actions",
+  "config.kuradialmenu.category.slots.tooltip": "Configure the action for each slot",
 
   "config.kuradialmenu.group.menu": "Menu",
   "config.kuradialmenu.group.size": "Size",
   "config.kuradialmenu.group.colors": "Colors",
+  "config.kuradialmenu.group.slotActions": "Slot Assignments",
 
   "config.kuradialmenu.option.slotCount": "Slot Count",
   "config.kuradialmenu.option.slotCount.description": "Number of slots in the radial menu (4, 8, or 12)",
@@ -30,6 +34,10 @@
   "config.kuradialmenu.option.highlightColor": "Highlight Color",
   "config.kuradialmenu.option.highlightColor.description": "Color of the selected slot highlight",
   "config.kuradialmenu.option.borderColor": "Border Color",
-  "config.kuradialmenu.option.borderColor.description": "Color of the slot borders"
+  "config.kuradialmenu.option.borderColor.description": "Color of the slot borders",
+
+  "config.kuradialmenu.slot.index": "Slot %d (%s)",
+  "config.kuradialmenu.slot.description": "Select the keybind to assign to this slot",
+  "config.kuradialmenu.slot.none": "(None)"
 }
 

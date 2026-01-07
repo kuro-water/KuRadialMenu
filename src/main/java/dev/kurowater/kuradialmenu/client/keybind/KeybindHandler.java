@@ -1,6 +1,7 @@
 package dev.kurowater.kuradialmenu.client.keybind;
 
 import dev.kurowater.kuradialmenu.KuRadialMenuClient;
+import dev.kurowater.kuradialmenu.client.config.ModConfigScreen;
 import dev.kurowater.kuradialmenu.client.ui.RadialMenuScreen;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
@@ -49,6 +50,14 @@ public final class KeybindHandler {
     private static void onClientTick(MinecraftClient client) {
         if (client.player == null) {
             return;
+        }
+
+        // 設定画面を開くキーの処理（wasPressed は1回だけ消費される）
+        if (ModKeybinds.OPEN_CONFIG.wasPressed()) {
+            KuRadialMenuClient.LOGGER.debug("Config key pressed");
+            if (client.currentScreen == null) {
+                client.setScreen(ModConfigScreen.create(null));
+            }
         }
 
         boolean isKeyPressed = isMenuKeyPressed(client);

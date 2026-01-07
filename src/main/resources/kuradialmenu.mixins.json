@@ -3,6 +3,7 @@
   "package": "dev.kurowater.kuradialmenu.mixin.client",
   "compatibilityLevel": "${java}",
   "client": [
+    "KeyBindingMixin"
   ],
   "injectors": {
     "defaultRequire": 1
