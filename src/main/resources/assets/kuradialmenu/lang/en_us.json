@@ -1,5 +1,35 @@
 {
   "key.kuradialmenu.open_menu": "Open Radial Menu",
-  "key.category.kuradialmenu": "KuRadialMenu"
+  "key.category.kuradialmenu": "KuRadialMenu",
+
+  "screen.kuradialmenu.radial_menu": "Radial Menu",
+
+  "config.kuradialmenu.title": "KuRadialMenu Settings",
+
+  "config.kuradialmenu.category.general": "General",
+  "config.kuradialmenu.category.general.tooltip": "General menu settings",
+  "config.kuradialmenu.category.ui": "UI",
+  "config.kuradialmenu.category.ui.tooltip": "User interface settings",
+
+  "config.kuradialmenu.group.menu": "Menu",
+  "config.kuradialmenu.group.size": "Size",
+  "config.kuradialmenu.group.colors": "Colors",
+
+  "config.kuradialmenu.option.slotCount": "Slot Count",
+  "config.kuradialmenu.option.slotCount.description": "Number of slots in the radial menu (4, 8, or 12)",
+
+  "config.kuradialmenu.option.innerRadius": "Inner Radius",
+  "config.kuradialmenu.option.innerRadius.description": "Inner radius of the menu in pixels",
+  "config.kuradialmenu.option.outerRadius": "Outer Radius",
+  "config.kuradialmenu.option.outerRadius.description": "Outer radius of the menu in pixels",
+  "config.kuradialmenu.option.centerDeadzone": "Center Deadzone",
+  "config.kuradialmenu.option.centerDeadzone.description": "Radius of the center area where no slot is selected",
+
+  "config.kuradialmenu.option.backgroundColor": "Background Color",
+  "config.kuradialmenu.option.backgroundColor.description": "Background color of the menu",
+  "config.kuradialmenu.option.highlightColor": "Highlight Color",
+  "config.kuradialmenu.option.highlightColor.description": "Color of the selected slot highlight",
+  "config.kuradialmenu.option.borderColor": "Border Color",
+  "config.kuradialmenu.option.borderColor.description": "Color of the slot borders"
 }
 

@@ -1,5 +1,35 @@
 {
   "key.category.kuradialmenu": "KuRadialMenu",
-  "key.kuradialmenu.open_menu": "ラジアルメニューを開く"
+  "key.kuradialmenu.open_menu": "ラジアルメニューを開く",
+
+  "screen.kuradialmenu.radial_menu": "ラジアルメニュー",
+
+  "config.kuradialmenu.title": "KuRadialMenu 設定",
+
+  "config.kuradialmenu.category.general": "一般",
+  "config.kuradialmenu.category.general.tooltip": "メニューの一般設定",
+  "config.kuradialmenu.category.ui": "UI",
+  "config.kuradialmenu.category.ui.tooltip": "ユーザーインターフェース設定",
+
+  "config.kuradialmenu.group.menu": "メニュー",
+  "config.kuradialmenu.group.size": "サイズ",
+  "config.kuradialmenu.group.colors": "カラー",
+
+  "config.kuradialmenu.option.slotCount": "スロット数",
+  "config.kuradialmenu.option.slotCount.description": "ラジアルメニューのスロット数（4、8、または12）",
+
+  "config.kuradialmenu.option.innerRadius": "内側半径",
+  "config.kuradialmenu.option.innerRadius.description": "メニューの内側半径（ピクセル）",
+  "config.kuradialmenu.option.outerRadius": "外側半径",
+  "config.kuradialmenu.option.outerRadius.description": "メニューの外側半径（ピクセル）",
+  "config.kuradialmenu.option.centerDeadzone": "中央デッドゾーン",
+  "config.kuradialmenu.option.centerDeadzone.description": "スロットが選択されない中央領域の半径",
+
+  "config.kuradialmenu.option.backgroundColor": "背景色",
+  "config.kuradialmenu.option.backgroundColor.description": "メニューの背景色",
+  "config.kuradialmenu.option.highlightColor": "ハイライト色",
+  "config.kuradialmenu.option.highlightColor.description": "選択中スロットのハイライト色",
+  "config.kuradialmenu.option.borderColor": "境界線色",
+  "config.kuradialmenu.option.borderColor.description": "スロットの境界線の色"
 }
 

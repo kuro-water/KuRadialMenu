@@ -63,7 +63,10 @@ dependencies {
     }
     modImplementation("$yaclUrl:${property("yacl_version")}")
 
-    fapi("fabric-lifecycle-events-v1", "fabric-resource-loader-v0", "fabric-content-registries-v0")
+    // Mod Menu (optional)
+    modCompileOnly("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+
+    fapi("fabric-lifecycle-events-v1", "fabric-resource-loader-v0", "fabric-key-binding-api-v1")
 }
 
 

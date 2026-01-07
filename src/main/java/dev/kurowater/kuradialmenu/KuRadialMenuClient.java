@@ -1,31 +1,34 @@
 package dev.kurowater.kuradialmenu;
 
+import dev.kurowater.kuradialmenu.client.config.ConfigHandler;
+import dev.kurowater.kuradialmenu.client.keybind.KeybindHandler;
+import dev.kurowater.kuradialmenu.client.keybind.ModKeybinds;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class KuRadialMenuClient implements ClientModInitializer {
-    // このロガーはコンソールとログファイルにテキストを書き込むために使用されます。
-    // Mod ID をロガー名として使用することがベストプラクティスとされています。
-    // そうすることで、どの Mod が情報、警告、エラーを書き込んだかが明確になります。
-    public static final Logger LOGGER = LoggerFactory.getLogger("kuradialmenu");
+
+    public static final String MOD_ID = "kuradialmenu";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final String VERSION = /*$ mod_version*/ "0.1.0";
-    public static final String MINECRAFT = /*$ minecraft*/ "1.20.1";
+    public static final String MINECRAFT = /*$ minecraft*/ "1.21.1";
 
     @Override
     public void onInitializeClient() {
-        // このコードは Minecraft が Mod 読み込み可能な状態になるとすぐに実行されます。
-        // ただし、一部の要素（リソースなど）はまだ初期化されていない可能性があります。
-        // 慎重に進めてください。
+        LOGGER.info("Initializing {} v{} for Minecraft {}", MOD_ID, VERSION, MINECRAFT);
 
-        LOGGER.info("Hello Fabric world!");
+        // 設定システムの初期化
+        ConfigHandler.initialize();
 
-        //? if !release
-        /*LOGGER.warn("I'm still a template!");*/
+        // キーバインドの登録
+        ModKeybinds.register();
 
-        //? if fapi: <0.100
-        LOGGER.info("Fabric API is old on this version");
+        // キーバインドハンドラーの登録
+        KeybindHandler.register();
+
+        LOGGER.info("{} initialized successfully!", MOD_ID);
     }
 
     /**
@@ -33,9 +36,9 @@ public class KuRadialMenuClient implements ClientModInitializer {
      */
     public static Identifier id(String namespace, String path) {
         //? if <1.21 {
-        return new Identifier(namespace, path);
-        //?} else
-        /*return Identifier.of(namespace, path);*/
+        /*return new Identifier(namespace, path);
+        *///?} else
+        return Identifier.of(namespace, path);
     }
 }
 

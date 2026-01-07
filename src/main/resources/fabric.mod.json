@@ -17,6 +17,9 @@
     "entrypoints" : {
         "client" : [
             "dev.kurowater.kuradialmenu.KuRadialMenuClient"
+        ],
+        "modmenu" : [
+            "dev.kurowater.kuradialmenu.client.compat.ModMenuIntegration"
         ]
     },
     "mixins" : [
@@ -25,6 +28,10 @@
     "depends" : {
         "fabricloader" : ">=0.16.0",
         "minecraft" : "${minecraft}",
-        "fabric-api" : "*"
+        "fabric-api" : "*",
+        "yet_another_config_lib_v3" : "*"
+    },
+    "suggests" : {
+        "modmenu" : "*"
     }
 }
