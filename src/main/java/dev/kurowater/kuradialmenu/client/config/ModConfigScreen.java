@@ -5,6 +5,9 @@ import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import dev.isxander.yacl3.api.controller.CyclingListControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
+import dev.kurowater.kuradialmenu.client.ui.KeybindPickerScreen;
+import dev.kurowater.kuradialmenu.client.ui.ConfigSaveErrorScreen;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.Text;
@@ -18,6 +21,9 @@ import java.util.List;
  * YACL を使用した設定画面を構築するクラス
  */
 public final class ModConfigScreen {
+
+    private static boolean errorHandlerRegistered;
+    private static Screen pendingSaveError;
 
     private ModConfigScreen() {
         // ユーティリティクラスのためインスタンス化禁止
@@ -33,12 +39,42 @@ public final class ModConfigScreen {
         ModConfig config = ConfigHandler.get();
         ModConfig defaults = ConfigHandler.getDefaults();
 
+        if (!errorHandlerRegistered) {
+            ClientTickEvents.END_CLIENT_TICK.register(client -> {
+                if (pendingSaveError != null) {
+                    Screen error = pendingSaveError;
+                    pendingSaveError = null;
+                    client.setScreen(error);
+                }
+            });
+            errorHandlerRegistered = true;
+        }
+        Option<Integer> slotCount = Option.<Integer>createBuilder()
+                .name(Text.translatable("config.kuradialmenu.option.slotCount"))
+                .description(OptionDescription.of(Text.translatable("config.kuradialmenu.option.slotCount.description")))
+                .binding(defaults.slotCount, () -> config.slotCount, value -> config.slotCount = value)
+                .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(4, 12).step(4))
+                .build();
+
+        List<ConfigCategory> categories = List.of(createGeneralCategory(slotCount),
+                createUICategory(config, defaults), createSlotCategory(config, defaults, slotCount));
         return YetAnotherConfigLib.createBuilder()
                 .title(Text.translatable("config.kuradialmenu.title"))
-                .category(createGeneralCategory(config, defaults))
-                .category(createUICategory(config, defaults))
-                .category(createSlotCategory(config, defaults))
-                .save(ConfigHandler::save)
+                .category(categories.get(0))
+                .category(categories.get(1))
+                .category(categories.get(2))
+                .save(() -> {
+                    if (!ConfigHandler.trySave()) {
+                        pendingSaveError = new ConfigSaveErrorScreen(parent, ConfigHandler.getLastError());
+                    }
+                    // Validation can clamp radii or truncate slots. Synchronize pending values
+                    // so YACL does not keep showing discarded values as unsaved changes.
+                    for (ConfigCategory category : categories) {
+                        for (OptionGroup group : category.groups()) {
+                            group.options().forEach(Option::forgetPendingValue);
+                        }
+                    }
+                })
                 .build()
                 .generateScreen(parent);
     }
@@ -53,7 +89,9 @@ public final class ModConfigScreen {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.options != null) {
             for (KeyBinding keyBinding : client.options.allKeys) {
-                keyBindings.add(keyBinding.getTranslationKey());
+                if (!keyBinding.getTranslationKey().equals("key.kuradialmenu.open_menu")) {
+                    keyBindings.add(keyBinding.getTranslationKey());
+                }
             }
         }
 
@@ -69,33 +107,19 @@ public final class ModConfigScreen {
         if (translationKey == null || translationKey.isEmpty()) {
             return Text.translatable("config.kuradialmenu.slot.none");
         }
-        return Text.translatable(translationKey);
+        return KeybindPickerScreen.displayName(translationKey);
     }
 
     /**
      * 一般設定カテゴリを作成
      */
-    private static ConfigCategory createGeneralCategory(ModConfig config, ModConfig defaults) {
+    private static ConfigCategory createGeneralCategory(Option<Integer> slotCount) {
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("config.kuradialmenu.category.general"))
                 .tooltip(Text.translatable("config.kuradialmenu.category.general.tooltip"))
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("config.kuradialmenu.group.menu"))
-                        .option(Option.<Integer>createBuilder()
-                                .name(Text.translatable("config.kuradialmenu.option.slotCount"))
-                                .description(OptionDescription.of(
-                                        Text.translatable("config.kuradialmenu.option.slotCount.description")))
-                                .binding(
-                                        defaults.slotCount,
-                                        () -> config.slotCount,
-                                        value -> {
-                                            config.slotCount = value;
-                                            config.adjustSlotActionsSize();
-                                        })
-                                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                                        .range(4, 12)
-                                        .step(4))
-                                .build())
+                        .option(slotCount)
                         .build())
                 .build();
     }
@@ -188,23 +212,24 @@ public final class ModConfigScreen {
     /**
      * スロット設定カテゴリを作成
      */
-    private static ConfigCategory createSlotCategory(ModConfig config, ModConfig defaults) {
+    private static ConfigCategory createSlotCategory(ModConfig config, ModConfig defaults, Option<Integer> slotCount) {
         List<String> availableKeyBindings = getAvailableKeyBindings();
 
         ConfigCategory.Builder categoryBuilder = ConfigCategory.createBuilder()
                 .name(Text.translatable("config.kuradialmenu.category.slots"))
                 .tooltip(Text.translatable("config.kuradialmenu.category.slots.tooltip"));
 
-        // 現在のスロット数に基づいてオプションを生成
+        // Keep all supported slots present; enable them from the pending (not yet saved) count.
         OptionGroup.Builder groupBuilder = OptionGroup.createBuilder()
                 .name(Text.translatable("config.kuradialmenu.group.slotActions"));
 
-        for (int i = 0; i < config.slotCount; i++) {
+        for (int i = 0; i < 12; i++) {
             final int slotIndex = i;
             String defaultAction = slotIndex < defaults.slotActions.size() ? defaults.slotActions.get(slotIndex) : "";
 
-            groupBuilder.option(Option.<String>createBuilder()
-                    .name(Text.translatable("config.kuradialmenu.slot.index", slotIndex + 1, getSlotDirectionName(slotIndex, config.slotCount)))
+            Option<String> assignment = Option.<String>createBuilder()
+                    .name(Text.translatable("config.kuradialmenu.slot.number", slotIndex + 1))
+                    .available(slotIndex < slotCount.pendingValue())
                     .description(OptionDescription.of(
                             Text.translatable("config.kuradialmenu.slot.description")))
                     .binding(
@@ -219,25 +244,23 @@ public final class ModConfigScreen {
                     .controller(opt -> CyclingListControllerBuilder.create(opt)
                             .values(availableKeyBindings)
                             .valueFormatter(ModConfigScreen::getKeyBindingDisplayName))
-                    .build());
+                    .build();
+            ButtonOption search = ButtonOption.createBuilder()
+                    .name(Text.translatable("config.kuradialmenu.slot.search", slotIndex + 1))
+                    .text(Text.translatable("config.kuradialmenu.picker.open"))
+                    .available(slotIndex < slotCount.pendingValue())
+                    .action((screen, button) -> MinecraftClient.getInstance().setScreen(
+                            new KeybindPickerScreen(screen, assignment.pendingValue(), assignment::requestSet)))
+                    .build();
+            slotCount.addListener((option, count) -> {
+                assignment.setAvailable(slotIndex < count);
+                search.setAvailable(slotIndex < count);
+            });
+            groupBuilder.option(assignment).option(search);
         }
 
         categoryBuilder.group(groupBuilder.build());
         return categoryBuilder.build();
     }
 
-    /**
-     * スロットインデックスから方向名を取得
-     */
-    private static String getSlotDirectionName(int index, int slotCount) {
-        String[] directions8 = {"↑", "↗", "→", "↘", "↓", "↙", "←", "↖"};
-        String[] directions4 = {"↑", "→", "↓", "←"};
-        String[] directions12 = {"↑", "↗", "↗", "→", "↘", "↘", "↓", "↙", "↙", "←", "↖", "↖"};
-
-        return switch (slotCount) {
-            case 4 -> index < directions4.length ? directions4[index] : "";
-            case 12 -> index < directions12.length ? directions12[index] : "";
-            default -> index < directions8.length ? directions8[index] : "";
-        };
-    }
 }

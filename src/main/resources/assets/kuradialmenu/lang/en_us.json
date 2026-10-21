@@ -2,42 +2,44 @@
   "key.kuradialmenu.open_menu": "Open Radial Menu",
   "key.kuradialmenu.open_config": "Open Settings",
   "key.category.kuradialmenu": "KuRadialMenu",
-
   "screen.kuradialmenu.radial_menu": "Radial Menu",
-
   "config.kuradialmenu.title": "KuRadialMenu Settings",
-
   "config.kuradialmenu.category.general": "General",
   "config.kuradialmenu.category.general.tooltip": "General menu settings",
   "config.kuradialmenu.category.ui": "UI",
   "config.kuradialmenu.category.ui.tooltip": "User interface settings",
   "config.kuradialmenu.category.slots": "Slot Actions",
   "config.kuradialmenu.category.slots.tooltip": "Configure the action for each slot",
-
   "config.kuradialmenu.group.menu": "Menu",
   "config.kuradialmenu.group.size": "Size",
   "config.kuradialmenu.group.colors": "Colors",
   "config.kuradialmenu.group.slotActions": "Slot Assignments",
-
   "config.kuradialmenu.option.slotCount": "Slot Count",
-  "config.kuradialmenu.option.slotCount.description": "Number of slots in the radial menu (4, 8, or 12)",
-
+  "config.kuradialmenu.option.slotCount.description": "Number of slots (4, 8, or 12). Reducing the count discards assignments beyond the new count when saved.",
   "config.kuradialmenu.option.innerRadius": "Inner Radius",
   "config.kuradialmenu.option.innerRadius.description": "Inner radius of the menu in pixels",
   "config.kuradialmenu.option.outerRadius": "Outer Radius",
   "config.kuradialmenu.option.outerRadius.description": "Outer radius of the menu in pixels",
   "config.kuradialmenu.option.centerDeadzone": "Center Deadzone",
   "config.kuradialmenu.option.centerDeadzone.description": "Radius of the center area where no slot is selected",
-
   "config.kuradialmenu.option.backgroundColor": "Background Color",
   "config.kuradialmenu.option.backgroundColor.description": "Background color of the menu",
   "config.kuradialmenu.option.highlightColor": "Highlight Color",
   "config.kuradialmenu.option.highlightColor.description": "Color of the selected slot highlight",
   "config.kuradialmenu.option.borderColor": "Border Color",
   "config.kuradialmenu.option.borderColor.description": "Color of the slot borders",
-
   "config.kuradialmenu.slot.index": "Slot %d (%s)",
-  "config.kuradialmenu.slot.description": "Select the keybind to assign to this slot",
-  "config.kuradialmenu.slot.none": "(None)"
+  "config.kuradialmenu.slot.description": "Use Search to find an action by name, category, or ID. Changes apply only when saved. Slot 1 points up; the remaining slots follow clockwise.",
+  "config.kuradialmenu.slot.none": "(None)",
+  "config.kuradialmenu.slot.number": "Slot %d",
+  "config.kuradialmenu.slot.search": "Choose action for slot %d",
+  "config.kuradialmenu.picker.open": "Search…",
+  "config.kuradialmenu.picker.title": "Choose a keybind action",
+  "config.kuradialmenu.picker.search": "Search by action, category, or ID",
+  "config.kuradialmenu.picker.results": "%d results · Page %d / %d",
+  "config.kuradialmenu.picker.previous": "Previous page",
+  "config.kuradialmenu.picker.next": "Next page",
+  "config.kuradialmenu.save_error.title": "Settings could not be saved",
+  "config.kuradialmenu.save_error.detail": "Changes are active for this session but have not been saved to disk. Check the config directory permissions and logs, then choose Retry saving. %s",
+  "config.kuradialmenu.save_error.retry": "Retry saving"
 }
-
