@@ -83,3 +83,10 @@ Fabricクライアント専用、Minecraft **1.19.4 / 1.20.1 / 1.21.1**を維持
 - 通常のcurlは依然proxy:8080への接続拒否。追加ネットワーク権限での確認は中断され、接続成功は未確認。
 - GitHubへの反映・全体ビルド・実機検証は未完了。これらを完了扱いにしない。
 - /workspace/KuRadialMenu-handoff/ に元コミット以降のformat-patchを保存。別環境の通常cloneへgit amで適用可能（元のiconも通常cloneから取得する）。
+
+## 2026-10-21 GitHub反映成功（最新状態）
+
+- 権限更新後、GitHub連携経由で8件のコミットを codex/complete-radial-menu に反映した。先頭は363ea6ad775cab03ea504da42bef21c07e9118b6。上記の「未反映」はこの反映前の履歴。
+- 全8コミットでGit tree SHAがローカルと一致することを検証。連携APIがコミットを作成したため、コミットSHAは以前のローカルと異なる。ローカル作業ブランチもGitHub側の履歴へ同期済み。旧ローカル履歴は backup/local-before-github-sync に保管。
+- GitHub Actionsで3版ビルドが起動した。実行 https://github.com/kuro-water/KuRadialMenu/actions/runs/39563361084 （結果は未確定）。次はこの結果を確認し、失敗ログから修正を続ける。
+- 実行環境のネットワーク問題は未解決でも、GitHub接続経由の変更反映とActionsによるビルドが可能。元ブランチへのマージ・リリースは未実施。
