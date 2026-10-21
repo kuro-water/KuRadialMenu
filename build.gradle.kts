@@ -88,11 +88,42 @@ loom {
 
 java {
     withSourcesJar()
-    // Javaバージョンを自動設定
-    val java = if (stonecutter.eval(stonecutter.current.version, ">=1.20.5"))
-        JavaVersion.VERSION_21 else JavaVersion.VERSION_17
-    targetCompatibility = java
-    sourceCompatibility = java
+    sourceCompatibility = requiredJava
+    targetCompatibility = requiredJava
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+    options.release.set(requiredJava.majorVersion.toInt())
+}
+
+// Standalone regression programs use production classes without starting Minecraft.
+val regressionPrograms = listOf(
+    "dev.kurowater.kuradialmenu.client.keybind.MenuKeyStateTest",
+    "dev.kurowater.kuradialmenu.client.util.MathUtilTest",
+    "dev.kurowater.kuradialmenu.client.config.ModConfigTest",
+    "dev.kurowater.kuradialmenu.client.config.ConfigFileStoreTest"
+)
+val regressionTasks = regressionPrograms.map { className ->
+    tasks.register<JavaExec>("regression" + className.substringAfterLast('.')) {
+        group = "verification"
+        dependsOn(tasks.testClasses)
+        classpath = sourceSets.test.get().runtimeClasspath
+        mainClass.set(className)
+        enableAssertions = true
+    }
+}
+tasks.register("regressionTest") {
+    group = "verification"
+    description = "Runs standalone configuration and input regression tests."
+    dependsOn(regressionTasks)
+}
+tasks.check { dependsOn("regressionTest") }
+// These tests are main programs, not JUnit tests. Keep `test` useful without
+// starting Gradle's default JUnit runner or adding an unused test framework.
+tasks.test {
+    dependsOn("regressionTest")
+    enabled = false
 }
 
 tasks {
@@ -101,12 +132,16 @@ tasks {
         inputs.property("name", project.property("mod.name"))
         inputs.property("version", project.property("mod.version"))
         inputs.property("minecraft", project.property("mod.mc_dep"))
+        inputs.property("java", requiredJava.majorVersion)
+        inputs.property("loader", project.property("deps.fabric_loader"))
 
         val props = mapOf(
             "id" to project.property("mod.id"),
             "name" to project.property("mod.name"),
             "version" to project.property("mod.version"),
-            "minecraft" to project.property("mod.mc_dep")
+            "minecraft" to project.property("mod.mc_dep"),
+            "java" to requiredJava.majorVersion,
+            "loader" to project.property("deps.fabric_loader")
         )
 
         filesMatching("fabric.mod.json") { expand(props) }

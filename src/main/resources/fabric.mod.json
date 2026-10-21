@@ -26,7 +26,8 @@
         "kuradialmenu.mixins.json"
     ],
     "depends" : {
-        "fabricloader" : ">=0.16.0",
+        "fabricloader" : ">=${loader}",
+        "java" : ">=${java}",
         "minecraft" : "${minecraft}",
         "fabric-api" : "*",
         "yet_another_config_lib_v3" : "*"
