@@ -1,82 +1,79 @@
 # KuRadialMenu
 
-![Minecraft Version](https://img.shields.io/badge/Minecraft-1.19.4%20|%201.20.1%20|%201.21.1-green)
-![Environment](https://img.shields.io/badge/Environment-Client-brightgreen)
-![Mod Loader](https://img.shields.io/badge/Mod%20Loader-Fabric-blue)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+Minecraft のキー操作を円形メニューに割り当てる、Fabric クライアント専用 MOD です。
 
-**KuRadialMenu** は Minecraft に直感的なラジアルメニューUIを追加するクライアントサイド QoL Mod です。
+**開発中（未リリース）**。今回の変更は純粋 Java の回帰テストを通過していますが、3バージョンの全体ビルド・ゲーム上の動作確認は未完了です。最新の検証状態・再開手順は [PROGRESS.md](PROGRESS.md)、実機チェック項目は [docs/VALIDATION.md](docs/VALIDATION.md) を参照してください。
 
-## ✨ 特徴
+## 対象環境
 
-- 🎯 **直感的な操作**: マウス操作による円形メニューで素早くアクションを実行
-- 🎨 **カスタマイズ可能**: メニュー項目やキーバインドを自由に設定
-- 🌐 **マルチバージョン対応**: 1.19.4 から 1.21.1 まで幅広いバージョンをサポート
-- 🪶 **軽量設計**: Client 専用で動作し、サーバーへの影響なし
+連続したバージョン範囲ではなく、次の3版を対象とします。
 
-## 📦 インストール方法
+| Minecraft | 実行Java | Fabric API | YACL | 任意のMod Menu |
+|---|---|---|---|---|
+| 1.19.4 | 17以上 | 0.87.2+1.19.4 | 3.0.3+1.19.4 | 6.3.1 |
+| 1.20.1 | 17以上 | 0.92.6+1.20.1 | 3.6.6+1.20.1-fabric | 7.2.2 |
+| 1.21.1 | 21以上 | 0.116.7+1.21.1 | 3.8.1+1.21.1-fabric | 11.0.3 |
 
-### 前提条件
-- [Fabric Loader](https://fabricmc.net/use/) 0.16.0 以上
-- [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
-- [YetAnotherConfigLib](https://www.curseforge.com/minecraft/mc-mods/yacl)
+Fabric Loader は0.18.2以上が必要です。各Minecraft版に対応したFabric APIとYACLを使います。サーバー側へのインストールは不要です。
 
-### 手順
-1. [Releases](https://github.com/kuro-water/KuRadialMenu/releases) から対応バージョンの `.jar` ファイルをダウンロード
-2. ダウンロードしたファイルを `mods/` フォルダに配置
-3. Minecraft を起動してプレイ
+## 操作
 
-## 🎮 使用方法
+1. ワールド内で **Rを押し続ける**とメニューが開きます。
+2. マウスを目的の方向へ動かし、**Rを離す**と選択した操作を1回実行します。
+3. 中央へ戻して離す、または **Esc** でキャンセルします。クリックでの確定はありません。
+4. メニュー中も移動・ジャンプ・スニーク・スプリントの実キー入力を使えます。
+5. **K** で設定画面を開きます。Mod Menuを導入した場合はそちらからも開けます。
 
-### 基本操作
-1. **メニューを開く**: デフォルトのキーバインド（設定可能）を押す
-2. **項目を選択**: マウスカーソルを目的の項目に合わせる
-3. **実行**: クリックまたはキーを離す
+メニューキーと設定キーは Minecraft の「設定 → 操作設定 → キー割り当て」で変更できます。マウスボタンも割り当て可能です。ほかの操作とのキー重複は避けてください。
 
-### 設定
-- **K キー** を押すと設定画面を直接開けます（Mod Menu 不要）
-- [Mod Menu](https://modrinth.com/mod/modmenu) からも設定画面にアクセス可能
-- `config/kuradialmenu.json` でも調整可能
+## メニューの設定
 
-### プロジェクト構造
+- 4・8・12スロットを選択できます。スロット1が上方向で、時計回りに並びます。
+- 「スロット」カテゴリの検索ボタンから、操作名・カテゴリ・キーIDで割当先を検索できます。
+- 検索画面で選んだ内容はまだ仮設定です。元の設定画面で保存すると反映され、取消で元に戻ります。
+- スロット数を減らして保存すると、範囲外の割当は削除されます。
+- 半径・中央の選択無効範囲・背景色・ハイライト色・境界線色を調整できます。
 
+設定ファイルは `config/kuradialmenu.json` です。手動編集はゲーム終了後に行ってください。次回起動時に読み込みます。不正なJSONは上書きせず、同じフォルダの `kuradialmenu.json.invalid-*.json` に退避できた場合のみ、設定画面からの保存で復旧できます。読み取りや退避に失敗した場合は保存を止めます。ファイルの問題を修復して再起動してください。
+
+保存エラー時は画面に通知します。「再試行」は通常の書き込みエラーを再試行できます。保存できなかった設定はその実行中だけ有効で、再起動すると失われます。
+
+## アクションの制約
+
+- 通常のKeyBindingを使う操作を対象とします。スクリーンショット・全画面切替には専用処理があります。
+- 移動・使用・プレイヤーリストなどの押し続ける操作は、**1ゲームティックの入力**になります。継続実行やトグルの代替ではありません。
+- 生のキーボードイベントだけを監視する他MODの操作、F3の組合せなどKeyBindingに登録されない操作には対応しません。
+- 未導入MODのキーIDは設定に残りますが、実行時には何もしません。
+- コマンド文字列・マクロ・効果音・アニメーションは未実装の将来機能です。
+
+## ビルドと検証
+
+ビルドには **完全なJDK 21** と依存配布元へのネットワーク接続が必要です。個人のJDKパスをリポジトリに設定せず、`JAVA_HOME` を使ってください。
+
+Linux/macOS:
+
+```sh
+bash gradlew :1.19.4:buildAndCollect :1.20.1:buildAndCollect :1.21.1:buildAndCollect
 ```
-src/main/java/dev/kurowater/kuradialmenu/
-├── KuRadialMenuClient.java  # エントリーポイント
-├── client/                   # Client専用コード
-│   ├── config/               # 設定管理
-│   ├── keybind/              # キーバインド処理
-│   ├── ui/                   # UI レンダリング
-│   ├── model/                # データモデル
-│   └── util/                 # ヘルパークラス
-└── mixin/                    # Mixin によるコア変更
-    └── client/               # Client側 Mixin
+
+Windows PowerShell:
+
+```powershell
+.\gradlew.bat :1.19.4:buildAndCollect :1.20.1:buildAndCollect :1.21.1:buildAndCollect
 ```
 
-## 🤝 コントリビューション
+成果物は `build/libs/0.1.0/` に集まります。対応するMinecraft版の通常jar（`-sources.jar` ではないもの）と必須MODを `mods/` に配置してください。ビルド成功だけで実機確認済みとはみなしません。
 
-バグ報告や機能提案は [Issues](https://github.com/kuro-water/KuRadialMenu/issues) へお願いします。
+単独版のテストは `bash gradlew :1.21.1:regressionTest`。全体ビルドの `check` からも回帰テストが実行されます。GitHub Actionsに3版のビルド行列を用意しています。
 
-プルリクエストも歓迎します！以下の手順でお願いします:
+MinecraftやGradleを起動せず、コアロジックだけを検証する場合:
 
-1. このリポジトリをフォーク
-2. 機能ブランチを作成 (`git checkout -b feature/amazing-feature`)
-3. 変更をコミット (`git commit -m 'Add amazing feature'`)
-4. ブランチをプッシュ (`git push origin feature/amazing-feature`)
-5. プルリクエストを開く
+```sh
+GSON_JAR=/path/to/gson-2.10.1.jar bash scripts/test-core.sh --require-gson
+```
 
-### コーディング規約
-- `.editorconfig` の設定に従う
-- Java コードは 4 スペースインデント
-- コミットメッセージは日本語または英語で明確に記述
+Gsonなしでも `bash scripts/test-core.sh` で設定値・入力状態・選択計算のテストを実行できますが、ファイル入出力テストは省略されます。このテストはMinecraft API・描画・Mixinの検証ではありません。
 
-## 📄 ライセンス
+## ライセンス
 
-このプロジェクトは MIT ライセンスの下で公開されています。詳細は [LICENSE](LICENSE) ファイルを参照してください。
-
----
-
-**開発者**: kuro-water  
-**バージョン**: 0.1.0  
-**最終更新**: 2025年12月19日
-
+[MIT](LICENSE)。開発者: kuro-water。
