@@ -1,54 +1,35 @@
 package dev.kurowater.kuradialmenu.client.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import dev.kurowater.kuradialmenu.KuRadialMenuClient;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
-/**
- * 設定の読み書きを管理するハンドラークラス
- * Gson を使用して JSON シリアライズを行う
- */
+/** Owns the active config and prevents failed reads from destroying user data. */
 public final class ConfigHandler {
-
     private static final String CONFIG_FILE_NAME = "kuradialmenu.json";
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private static ModConfig config;
-    private static ModConfig defaults;
     private static Path configPath;
+    private static boolean writable;
+    private static boolean loadedSuccessfully;
+    private static String lastError;
 
     private ConfigHandler() {
-        // ユーティリティクラスのためインスタンス化禁止
     }
 
-    /**
-     * 設定ハンドラーを初期化し設定ファイルを読み込む
-     */
     public static void initialize() {
         configPath = FabricLoader.getInstance().getConfigDir().resolve(CONFIG_FILE_NAME);
-        defaults = new ModConfig();
-
-        // 設定ファイルを読み込む
         load();
-
-        // 設定の妥当性検証
-        config.validate();
-
-        // 検証後の設定を保存
-        save();
-
-        KuRadialMenuClient.LOGGER.info("Config loaded from {}", configPath);
+        // A damaged or unreadable original is never replaced during startup.
+        if (loadedSuccessfully) {
+            save();
+        }
     }
 
-    /**
-     * 現在の設定インスタンスを取得
-     * @return 設定インスタンス
-     */
     public static ModConfig get() {
         if (config == null) {
             throw new IllegalStateException("ConfigHandler has not been initialized");
@@ -56,57 +37,71 @@ public final class ConfigHandler {
         return config;
     }
 
-    /**
-     * デフォルト設定インスタンスを取得
-     * @return デフォルト設定インスタンス
-     */
+    /** Return a new instance so a caller cannot mutate future reset values. */
     public static ModConfig getDefaults() {
-        if (defaults == null) {
-            defaults = new ModConfig();
-        }
-        return defaults;
+        return new ModConfig();
     }
 
-    /**
-     * 設定ファイルから読み込み
-     */
+    public static String getLastError() {
+        return lastError;
+    }
+
     public static void load() {
+        config = new ModConfig();
+        writable = false;
+        loadedSuccessfully = false;
+        lastError = null;
         if (configPath == null) {
-            config = new ModConfig();
+            lastError = "ConfigHandler has not been initialized";
             return;
         }
-
-        if (Files.exists(configPath)) {
+        try {
+            config = ConfigFileStore.read(configPath);
+            writable = true;
+            loadedSuccessfully = true;
+            KuRadialMenuClient.LOGGER.info("Config loaded from {}", configPath);
+        } catch (NoSuchFileException e) {
+            writable = true;
+            loadedSuccessfully = true;
+        } catch (JsonParseException e) {
+            lastError = "Invalid config; defaults are active. Original preserved at " + configPath;
+            KuRadialMenuClient.LOGGER.error(lastError, e);
             try {
-                String json = Files.readString(configPath);
-                config = GSON.fromJson(json, ModConfig.class);
-                if (config == null) {
-                    config = new ModConfig();
-                }
-            } catch (IOException e) {
-                KuRadialMenuClient.LOGGER.error("Failed to load config", e);
-                config = new ModConfig();
+                Path backup = ConfigFileStore.backupInvalid(configPath);
+                writable = true;
+                lastError = "Invalid config backed up at " + backup + ". Save settings to recover.";
+                KuRadialMenuClient.LOGGER.warn(lastError);
+            } catch (IOException backupError) {
+                lastError += ". Backup failed; saving is disabled until the file is repaired and reloaded.";
+                KuRadialMenuClient.LOGGER.error(lastError, backupError);
             }
-        } else {
-            config = new ModConfig();
+        } catch (IOException e) {
+            lastError = "Cannot read " + configPath + "; saving is disabled until it is readable and reloaded.";
+            KuRadialMenuClient.LOGGER.error(lastError, e);
         }
     }
 
-    /**
-     * 設定ファイルに保存
-     */
+    /** Compatibility callback for YACL; callers needing feedback use trySave(). */
     public static void save() {
-        if (configPath == null || config == null) {
-            return;
-        }
+        trySave();
+    }
 
+    public static boolean trySave() {
+        if (configPath == null || config == null || !writable) {
+            if (lastError == null) {
+                lastError = "Config is not writable";
+            }
+            KuRadialMenuClient.LOGGER.error("Cannot save config: {}", lastError);
+            return false;
+        }
         try {
-            Files.createDirectories(configPath.getParent());
-            String json = GSON.toJson(config);
-            Files.writeString(configPath, json);
+            ConfigFileStore.write(configPath, config);
+            lastError = null;
+            return true;
         } catch (IOException e) {
-            KuRadialMenuClient.LOGGER.error("Failed to save config", e);
+            lastError = "Failed to save " + configPath + ": " + e.getMessage();
+            KuRadialMenuClient.LOGGER.error(lastError, e);
+            return false;
         }
     }
 }
-

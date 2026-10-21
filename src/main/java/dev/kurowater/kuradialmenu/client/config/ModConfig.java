@@ -65,7 +65,7 @@ public class ModConfig {
      * デフォルトのスロット設定を初期化
      */
     private void initializeDefaultSlots() {
-        slotActions.clear();
+        slotActions = new ArrayList<>();
         // 8スロットのデフォルト設定
         slotActions.add("key.inventory");           // 上: インベントリ
         slotActions.add("key.swapOffhand");         // 右上: オフハンド切替
@@ -81,11 +81,24 @@ public class ModConfig {
      * スロット数に合わせてスロットアクションリストのサイズを調整
      */
     public void adjustSlotActionsSize() {
+        if (slotCount != 4 && slotCount != 8 && slotCount != 12) {
+            slotCount = 8;
+        }
+        // Gson can assign null even though the field has an initializer.
+        if (slotActions == null) {
+            initializeDefaultSlots();
+        } else {
+            slotActions = new ArrayList<>(slotActions);
+        }
         while (slotActions.size() < slotCount) {
             slotActions.add("");
         }
         while (slotActions.size() > slotCount) {
             slotActions.remove(slotActions.size() - 1);
+        }
+        for (int i = 0; i < slotActions.size(); i++) {
+            String action = slotActions.get(i);
+            slotActions.set(i, action == null ? "" : action.trim());
         }
     }
 
@@ -101,7 +114,7 @@ public class ModConfig {
         // 半径の検証
         innerRadius = Math.max(10, Math.min(100, innerRadius));
         outerRadius = Math.max(50, Math.min(300, outerRadius));
-        centerDeadzone = Math.max(5, Math.min(50, centerDeadzone));
+        centerDeadzone = Math.max(5, Math.min(Math.min(50, innerRadius), centerDeadzone));
 
         // 外側半径が内側半径より大きいことを保証
         if (outerRadius <= innerRadius) {
