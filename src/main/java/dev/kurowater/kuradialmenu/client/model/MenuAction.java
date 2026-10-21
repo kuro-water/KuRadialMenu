@@ -2,6 +2,8 @@ package dev.kurowater.kuradialmenu.client.model;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.text.Text;
+import dev.kurowater.kuradialmenu.client.keybind.ActionDispatcher;
 
 /**
  * ラジアルメニューのアクションを表すインターフェース
@@ -42,14 +44,7 @@ public interface MenuAction {
 
         @Override
         public void execute(MinecraftClient client) {
-            if (client.player == null) {
-                return;
-            }
-
-            // キーの押下をシミュレート
-            // timesPressed を増加させることで、即座に実行されるアクション（インベントリ開閉など）に対応
-            KeyBindingAccessor accessor = (KeyBindingAccessor) keyBinding;
-            accessor.kuradialmenu$incrementTimesPressed();
+            ActionDispatcher.execute(client, keyBinding);
         }
 
         @Override
@@ -59,7 +54,7 @@ public interface MenuAction {
 
         @Override
         public String getDisplayName() {
-            return keyBinding.getBoundKeyLocalizedText().getString();
+            return Text.translatable(keyBinding.getTranslationKey()).getString();
         }
 
         /**
@@ -75,7 +70,9 @@ public interface MenuAction {
      * Mixin で実装される
      */
     interface KeyBindingAccessor {
-        void kuradialmenu$incrementTimesPressed();
+        void kuradialmenu$queuePress();
+        void kuradialmenu$setPressed(boolean pressed);
+        void kuradialmenu$clearQueuedPress();
     }
 }
 

@@ -2,6 +2,8 @@ package dev.kurowater.kuradialmenu.client.ui;
 
 import dev.kurowater.kuradialmenu.client.model.MenuSlot;
 import dev.kurowater.kuradialmenu.client.model.RadialMenu;
+import dev.kurowater.kuradialmenu.client.keybind.KeybindHandler;
+import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 //? if >=1.20 {
@@ -27,11 +29,41 @@ public class RadialMenuScreen extends Screen {
     @Override
     protected void init() {
         super.init();
+        if (client != null) {
+            int[] windowWidth = new int[1];
+            int[] windowHeight = new int[1];
+            long handle = client.getWindow().getHandle();
+            GLFW.glfwGetWindowSize(handle, windowWidth, windowHeight);
+            // GLFW cursor coordinates are logical window pixels, not framebuffer pixels (HiDPI).
+            GLFW.glfwSetCursorPos(handle, windowWidth[0] / 2.0, windowHeight[0] / 2.0);
+        }
     }
 
     @Override
     public void tick() {
         super.tick();
+    }
+
+    public void updateSelectionFromMouse() {
+        if (client != null) {
+            int[] windowWidth = new int[1];
+            int[] windowHeight = new int[1];
+            GLFW.glfwGetWindowSize(client.getWindow().getHandle(), windowWidth, windowHeight);
+            if (windowWidth[0] <= 0 || windowHeight[0] <= 0) {
+                return;
+            }
+            double mouseX = client.mouse.getX() * width / windowWidth[0];
+            double mouseY = client.mouse.getY() * height / windowHeight[0];
+            menu.updateSelection(width / 2, height / 2, mouseX, mouseY);
+        }
+    }
+
+    @Override
+    public void removed() {
+        if (client != null) {
+            KeybindHandler.menuRemoved(client);
+        }
+        super.removed();
     }
 
     //? if >=1.21 {

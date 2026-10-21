@@ -1,85 +1,104 @@
 package dev.kurowater.kuradialmenu.client.keybind;
 
-import dev.kurowater.kuradialmenu.KuRadialMenuClient;
 import dev.kurowater.kuradialmenu.client.config.ModConfigScreen;
+import dev.kurowater.kuradialmenu.client.model.MenuAction.KeyBindingAccessor;
 import dev.kurowater.kuradialmenu.client.ui.RadialMenuScreen;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.world.ClientWorld;
 
-/**
- * キーバインドの状態を監視し、メニューの開閉を制御するハンドラー
- */
+/** Owns radial input and cleans up state on cancellation, focus loss and disconnect. */
 public final class KeybindHandler {
+    private static final MenuKeyState MENU_KEY = new MenuKeyState();
+    private static boolean movementOverridden;
+    private static ClientWorld lastWorld;
 
-    private static boolean wasKeyPressed = false;
+    private KeybindHandler() { }
 
-    private KeybindHandler() {
-        // ユーティリティクラスのためインスタンス化禁止
-    }
-
-    /**
-     * キーバインドハンドラーを登録
-     */
     public static void register() {
-        ClientTickEvents.END_CLIENT_TICK.register(KeybindHandler::onClientTick);
+        ClientTickEvents.START_CLIENT_TICK.register(KeybindHandler::beforeTick);
+        ClientTickEvents.END_CLIENT_TICK.register(KeybindHandler::afterTick);
     }
 
-    /**
-     * キーバインドが現在押されているかどうかを判定
-     * <p>
-     * KeyBinding.isPressed() はキュー消費型のため長押し検出には不適切。
-     * 代わりに InputUtil.isKeyPressed() でキーの物理的な押下状態を直接確認する。
-     * getBoundKeyTranslationKey() を使用することで、ユーザーがキー設定を変更した場合にも追従する。
-     * </p>
-     *
-     * @param client MinecraftClient インスタンス
-     * @return キーが押されている場合 true
-     */
-    private static boolean isMenuKeyPressed(MinecraftClient client) {
-        long handle = client.getWindow().getHandle();
-        InputUtil.Key boundKey = InputUtil.fromTranslationKey(
-                ModKeybinds.OPEN_MENU.getBoundKeyTranslationKey()
-        );
-        return InputUtil.isKeyPressed(handle, boundKey.getCode());
+    private static boolean available(MinecraftClient client) {
+        return client.player != null && client.world != null && client.isWindowFocused();
     }
 
-    /**
-     * クライアントティック毎に呼び出される
-     */
-    private static void onClientTick(MinecraftClient client) {
-        if (client.player == null) {
+    private static KeyBinding[] movementKeys(MinecraftClient client) {
+        return new KeyBinding[] { client.options.forwardKey, client.options.backKey,
+                client.options.leftKey, client.options.rightKey, client.options.jumpKey,
+                client.options.sneakKey, client.options.sprintKey };
+    }
+
+    private static void beforeTick(MinecraftClient client) {
+        boolean active = available(client) && lastWorld == client.world;
+        lastWorld = client.world;
+        ActionDispatcher.beforeTick(client, active);
+        if (!active) {
+            MENU_KEY.update(false, false);
+            ActionDispatcher.finishTick(client, false);
+            if (client.currentScreen instanceof RadialMenuScreen) {
+                client.setScreen(null); // Cancellation never executes the highlighted action.
+            }
+        }
+        if (active && client.currentScreen instanceof RadialMenuScreen) {
+            for (KeyBinding binding : movementKeys(client)) {
+                // Bypass StickyKeyBinding#setPressed: polling must not toggle sneak every tick.
+                ((KeyBindingAccessor) binding).kuradialmenu$setPressed(PhysicalInput.isDown(client, binding));
+            }
+            movementOverridden = true;
+        } else if (movementOverridden) {
+            releaseMovement(client);
+        }
+    }
+
+    private static void releaseMovement(MinecraftClient client) {
+        if (!movementOverridden) {
             return;
         }
-
-        // 設定画面を開くキーの処理（wasPressed は1回だけ消費される）
-        if (ModKeybinds.OPEN_CONFIG.wasPressed()) {
-            KuRadialMenuClient.LOGGER.debug("Config key pressed");
-            if (client.currentScreen == null) {
-                client.setScreen(ModConfigScreen.create(null));
-            }
+        boolean restore = available(client) && client.currentScreen == null;
+        for (KeyBinding binding : movementKeys(client)) {
+            ((KeyBindingAccessor) binding).kuradialmenu$setPressed(restore && PhysicalInput.isDown(client, binding));
         }
+        movementOverridden = false;
+    }
 
-        boolean isKeyPressed = isMenuKeyPressed(client);
-
-        // キーが押された瞬間にメニューを開く
-        if (isKeyPressed && !wasKeyPressed) {
-            KuRadialMenuClient.LOGGER.debug("Menu key pressed");
-            if (client.currentScreen == null) {
-                client.setScreen(new RadialMenuScreen());
+    /** Screen.removed runs before Minecraft assigns the replacement screen. */
+    public static void menuRemoved(MinecraftClient client) {
+        if (movementOverridden) {
+            for (KeyBinding binding : movementKeys(client)) {
+                ((KeyBindingAccessor) binding).kuradialmenu$setPressed(false);
             }
+            // Restore physical movement on the next tick only if returning to gameplay.
         }
+    }
 
-        // キーが離された瞬間にメニューを閉じる (メニュー画面表示中の場合)
-        if (!isKeyPressed && wasKeyPressed) {
-            KuRadialMenuClient.LOGGER.debug("Menu key released");
-            if (client.currentScreen instanceof RadialMenuScreen menuScreen) {
-                menuScreen.executeSelectedAction();
-                client.setScreen(null);
-            }
+    private static void afterTick(MinecraftClient client) {
+        boolean active = available(client);
+        ActionDispatcher.finishTick(client, active);
+        boolean openConfig = false;
+        while (ModKeybinds.OPEN_CONFIG.wasPressed()) {
+            openConfig = true;
         }
+        // The radial key is monitored physically; drain its otherwise unused queued presses.
+        while (ModKeybinds.OPEN_MENU.wasPressed()) { }
 
-        wasKeyPressed = isKeyPressed;
+        MenuKeyState.Change change = MENU_KEY.update(active && PhysicalInput.isDown(client, ModKeybinds.OPEN_MENU), active);
+        if (!active) {
+            return;
+        }
+        if (openConfig && client.currentScreen == null) {
+            client.setScreen(ModConfigScreen.create(null));
+        }
+        if (change == MenuKeyState.Change.PRESSED && client.currentScreen == null) {
+            client.setScreen(new RadialMenuScreen());
+        } else if (change == MenuKeyState.Change.RELEASED
+                && client.currentScreen instanceof RadialMenuScreen menuScreen) {
+            menuScreen.updateSelectionFromMouse();
+            client.setScreen(null);
+            releaseMovement(client);
+            menuScreen.executeSelectedAction();
+        }
     }
 }
-
