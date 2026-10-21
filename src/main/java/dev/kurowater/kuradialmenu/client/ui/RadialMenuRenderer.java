@@ -47,7 +47,6 @@ public class RadialMenuRenderer {
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
         for (int i = 0; i < slotCount; i++) {
-            MenuSlot slot = menu.getSlots().get(i);
             boolean isSelected = (i == menu.getSelectedIndex());
 
             double startAngle = i * slotAngle - slotAngle / 2;
@@ -56,12 +55,6 @@ public class RadialMenuRenderer {
             int color = isSelected ? config.highlightColor : config.backgroundColor;
             drawSlotArc(context, centerX, centerY, config.innerRadius, config.outerRadius,
                     startAngle, endAngle, color);
-
-            if (slot.hasAction()) {
-                drawSlotLabel(context, slot, centerX, centerY,
-                        (config.innerRadius + config.outerRadius) / 2,
-                        startAngle + slotAngle / 2);
-            }
         }
 
         drawBorders(context, centerX, centerY, config.innerRadius, config.outerRadius,
@@ -69,6 +62,15 @@ public class RadialMenuRenderer {
 
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
+
+        // Text rendering changes shader/blend state. Draw every shape first.
+        for (int i = 0; i < slotCount; i++) {
+            MenuSlot slot = menu.getSlots().get(i);
+            if (slot.hasAction()) {
+                drawSlotLabel(context, slot, centerX, centerY,
+                        (config.innerRadius + config.outerRadius) / 2, i * slotAngle);
+            }
+        }
     }
 
     private void drawSlotArc(DrawContext context, int centerX, int centerY,
@@ -187,7 +189,6 @@ public class RadialMenuRenderer {
         BufferBuilder buffer = tessellator.getBuffer();
 
         for (int i = 0; i < slotCount; i++) {
-            MenuSlot slot = menu.getSlots().get(i);
             boolean isSelected = (i == menu.getSelectedIndex());
 
             double startAngle = i * slotAngle - slotAngle / 2;
@@ -196,12 +197,6 @@ public class RadialMenuRenderer {
             int color = isSelected ? config.highlightColor : config.backgroundColor;
             drawSlotArc(matrices, buffer, tessellator, centerX, centerY,
                     config.innerRadius, config.outerRadius, startAngle, endAngle, color);
-
-            if (slot.hasAction()) {
-                drawSlotLabel(matrices, slot, centerX, centerY,
-                        (config.innerRadius + config.outerRadius) / 2,
-                        startAngle + slotAngle / 2);
-            }
         }
 
         drawBorders(matrices, buffer, tessellator, centerX, centerY,
@@ -209,6 +204,15 @@ public class RadialMenuRenderer {
 
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
+
+        // Text rendering changes shader/blend state. Draw every shape first.
+        for (int i = 0; i < slotCount; i++) {
+            MenuSlot slot = menu.getSlots().get(i);
+            if (slot.hasAction()) {
+                drawSlotLabel(matrices, slot, centerX, centerY,
+                        (config.innerRadius + config.outerRadius) / 2, i * slotAngle);
+            }
+        }
     }
 
     private void drawSlotArc(MatrixStack matrices, BufferBuilder buffer, Tessellator tessellator,

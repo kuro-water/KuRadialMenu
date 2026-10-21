@@ -47,16 +47,8 @@ public class RadialMenu {
      */
     public void updateSelection(double centerX, double centerY, double mouseX, double mouseY) {
         ModConfig config = ConfigHandler.get();
-        double distance = MathUtil.getDistance(centerX, centerY, mouseX, mouseY);
-
-        // デッドゾーン内では選択なし
-        if (distance < config.centerDeadzone) {
-            selectedIndex = -1;
-            return;
-        }
-
-        double angle = MathUtil.getAngle(centerX, centerY, mouseX, mouseY);
-        selectedIndex = MathUtil.getSlotIndex(angle, config.slotCount);
+        selectedIndex = MathUtil.selectSlot(mouseX - centerX, mouseY - centerY,
+                config.centerDeadzone, slots.size());
     }
 
     /**

@@ -22,7 +22,7 @@ public final class MathUtil {
         double dx = pointX - centerX;
         double dy = pointY - centerY;
 
-        // atan2は左方向が0度で反時計回り、Y軸が下向きなので調整
+        // Screen coordinates grow downwards; swapping axes makes north zero.
         double angle = Math.toDegrees(Math.atan2(dx, -dy));
 
         // 0-360の範囲に正規化
@@ -45,7 +45,7 @@ public final class MathUtil {
     public static double getDistance(double x1, double y1, double x2, double y2) {
         double dx = x2 - x1;
         double dy = y2 - y1;
-        return Math.sqrt(dx * dx + dy * dy);
+        return Math.hypot(dx, dy);
     }
 
     /**
@@ -56,10 +56,22 @@ public final class MathUtil {
      * @return スロットインデックス (0から始まる)
      */
     public static int getSlotIndex(double angle, int slotCount) {
+        if (slotCount <= 0 || !Double.isFinite(angle)) {
+            throw new IllegalArgumentException("Finite angle and positive slot count required");
+        }
         double slotAngle = 360.0 / slotCount;
         // 最初のスロットの中心が上 (0度) になるようにオフセット
-        double adjustedAngle = (angle + slotAngle / 2) % 360;
+        double normalizedAngle = ((angle % 360) + 360) % 360;
+        double adjustedAngle = (normalizedAngle + slotAngle / 2) % 360;
         return (int) (adjustedAngle / slotAngle);
+    }
+
+    /** Shared selection rule: north-first, clockwise, with a circular deadzone. */
+    public static int selectSlot(double dx, double dy, double deadzone, int slotCount) {
+        if (!Double.isFinite(dx) || !Double.isFinite(dy) || Math.hypot(dx, dy) < deadzone) {
+            return -1;
+        }
+        return getSlotIndex(getAngle(0, 0, dx, dy), slotCount);
     }
 }
 
