@@ -2,7 +2,19 @@
 
 Minecraft のキー操作を円形メニューに割り当てる、Fabric クライアント専用 MOD です。
 
-**開発中（未リリース）**。今回の変更は純粋 Java の回帰テストを通過していますが、3バージョンの全体ビルド・ゲーム上の動作確認は未完了です。最新の検証状態・再開手順は [PROGRESS.md](PROGRESS.md)、実機チェック項目は [docs/VALIDATION.md](docs/VALIDATION.md) を参照してください。
+**開発中（未リリース）**。3バージョンのCIビルドと回帰テストは成功しています。ゲーム上の動作確認は未完了です。最新の検証状態・再開手順は [PROGRESS.md](PROGRESS.md)、実機チェック項目は [docs/VALIDATION.md](docs/VALIDATION.md) を参照してください。
+
+## 文書の案内
+
+| 文書 | 用途 |
+|---|---|
+| [AGENTS.md](AGENTS.md) | 開発エージェントの作業指示・再開時の入口 |
+| [PROGRESS.md](PROGRESS.md) | 現在の状態・優先順位・残タスク |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 仕様・完成条件・設計判断 |
+| [docs/VALIDATION.md](docs/VALIDATION.md) | 検証証拠と実機チェック |
+| [CHANGELOG.md](CHANGELOG.md) | 変更概要 |
+
+別セッションで開発を引き継ぐ場合は、このリポジトリと作業ブランチを指定し、AGENTS.mdから読み始めてください。
 
 ## 対象環境
 
